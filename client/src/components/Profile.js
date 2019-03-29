@@ -1,55 +1,92 @@
 import React from 'react';
 import axios from 'axios';
 import { Card, Container, Image, Button, Icon, Form } from 'semantic-ui-react';
-import doghair from './doghair.jpeg'
+import { AuthConsumer } from '../providers/AuthProvider'
+
 
 class Profile extends React.Component {
-  state = {name: '', avatar: '', toggleForm: false }
+  state = {name: '', avatar: '', user_id: '', showForm: false, }
 
   componentDidMount = () => {
     axios.get('/api/profiles')
-    .then( res => {
-      this.setState({ name: res.data.name, avatar: res.data.avatar})
+    .then( res => { 
+      res.data &&
+      this.setState({ name: res.data.name, avatar: res.data.avatar, user_id: res.data.user_id})
     })
-    .catch( res => {
-      console.log(res)
-    })
+    
+  }
+
+  toggleForm = () => {
+    this.setState({showForm: !this.state.showForm})
   }
 
   handleSubmit = (e) => {
     e.preventDefault()
-    axios.put(`/api/departments/${this.props.match.params.id}`, {name: this.state.name})
+    axios.post('/api/profiles', {name: this.state.name, avatar: this.state.avatar, user_id: this.props.auth.user.id})
     .then( res => {
-      this.props.history.push("/");
+      this.props.history.push("/profile");
+      this.setState({showForm: !this.state.showForm})
+    })
+    .catch( res=> {
+      console.log(res)
     })
     
   }
 
   handleChange = (e) => {
-
+    this.setState({ [e.target.name]: e.target.value });
   }
 
-  avatarFunc = () => {
+  avatarForm = () => {
     return (
-      this.state.toggleForm ? <Form onSubmit={this.handleSubmit}>
-      <Form.Input
-      name={this.state.avatar}
-      defaultValue={this.state.avatar}
-      onChange={this.handleChange}
-      label="Avatar"
-      />
-      
-    </Form>
-      
-          : 
-      "Avatar Goes Here"
+      <Form onSubmit={this.handleSubmit}>
+        <Form.Input
+        name='avatar'
+        defaultValue={this.state.avatar}
+        onChange={this.handleChange}
+        label="Avatar URL"
+        />
+      </Form>
+     
+    )
+  }
+
+  nameForm = () => {
+    return (
+      <Form onSubmit={this.handleSubmit}>
+        <Form.Input
+        name='name'
+        defaultValue={this.state.name}
+        onChange={this.handleChange}
+        label="Name"
+        />
+      </Form>
+     
+    )
+  }
+
+  avatarDisplay = () => {
+    const { avatar } = this.state
+    return (
+      <div>
+      {avatar ? <Image src={avatar}/> : "Avatar goes here"}
+      </div>
+    )
+  }
+
+  nameDisplay = () => {
+    const { name } = this.state
+    return (
+      <div>
+      {name ? name : "Name goes here"}
+      </div>
     )
   }
 
 
 
   render () {
-    const {name, avatar} = this.state
+    const {name, showForm} = this.state
     return (
       <>
       <Container style ={{display: 'flex', justifyContent: 'center'}}>
@@ -57,11 +94,11 @@ class Profile extends React.Component {
           <Card.Content>
             
             <Card.Meta style={{display: 'flex', justifyContent: 'center'}}>
-              {avatar ? avatar : 'Avatar Goes Here'}  
+              {showForm ? this.avatarForm() : this.avatarDisplay() }  
             </Card.Meta>
             <br />
             <Card.Header style={{textAlign: 'center'}}>
-              {name ? name : '"Name goes Here"'}
+              {showForm ? this.nameForm() : this.nameDisplay()}
             </Card.Header>
           </Card.Content>
           <Card.Content style={{textAlign: 'center'}}>
@@ -69,7 +106,7 @@ class Profile extends React.Component {
               <Icon name="hand spock" />
               My Posts
             </Button>
-            <Button>
+            <Button onClick={() => this.toggleForm()}>
               Edit Profile
             </Button>
           </Card.Content>
@@ -80,5 +117,12 @@ class Profile extends React.Component {
   }
 }
 
-export default Profile;
+const ConnectedProfile = (props) => (
+  <AuthConsumer>
+    {auth =>
+      <Profile {...props} auth={auth}/>
+      }
+  </AuthConsumer>
+)
 
+export default ConnectedProfile;

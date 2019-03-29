@@ -15,20 +15,21 @@ import Profile from './components/Profile';
 
 
 class App extends Component {
+ 
   render() {
     return (
       <>
       
         <Container>
-          <Navbar />
           <FetchUser>
+          <Navbar />
           <Switch>
             <Route exact path='/' component={Home} />
             <Route exact path='/login' component={Login} />
             <Route exact path='/register' component={Register} />
             <ProtectedRoute exact path='/profiles' component={Friends} />
+            <ProtectedRoute exact path='/profile/posts' component={Posts} />
             <ProtectedRoute exact path='/profile' component={Profile} />
-            <ProtectedRoute exact path='/profile/:id/posts' component={Posts} />
             <ProtectedRoute exact path='/profile/:profile_id/posts/:id' component={Post} />
             
             <Route component={NoMatch} />

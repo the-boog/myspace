@@ -2,7 +2,7 @@ import React from 'react';
 import { Menu } from 'semantic-ui-react'
 import { Link, } from 'react-router-dom';
 import { AuthConsumer} from '../providers/AuthProvider'
-import axios from 'axios';
+
 
 class Navbar extends React.Component {
   state = {hoverColorHome: false,
@@ -12,8 +12,8 @@ class Navbar extends React.Component {
            hoverColorLogin: false,
            hoverColorRegister: false,
            hoverColorProfile: false,
+           
           }
-    
 
   navDisplayLoggedInRight = () => {
     const { auth: {handleLogout}, history } = this.props;
@@ -54,7 +54,7 @@ class Navbar extends React.Component {
           {this.state.hoverColorProfile ? this.blue('Profile') : 'Profile'}        
         </Menu.Item>
       </Link>
-      <Link to="/profile/1">
+      <Link to='/profile/posts'>
         <Menu.Item onMouseOver={() => this.hoverColorOn(2)} onMouseLeave={() => this.hoverColorOn(0)}>
           {this.state.hoverColorMyPosts ? this.blue('My Posts') : 'My Posts'}
         </Menu.Item>

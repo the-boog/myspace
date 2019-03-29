@@ -32,7 +32,7 @@ handleChange = (e) => {
 
 
   render () {
-    const {email, password, modalOpen, passwordConfirmation, name} = this.state
+    const {email, password, modalOpen, passwordConfirmation,} = this.state
     return (
       
      
@@ -42,13 +42,6 @@ handleChange = (e) => {
         </Modal.Header>
           <Modal.Content>
           <Form onSubmit={this.handleSubmit}>
-          <Form.Input
-            name="name"
-            label="Name"
-            value={name}
-            required
-            onChange={this.handleChange}
-          />
           <Form.Input
             name="email"
             label="E-mail"

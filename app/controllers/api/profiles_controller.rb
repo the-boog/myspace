@@ -10,7 +10,7 @@ class Api::ProfilesController < ApplicationController
   end
 
   def create
-    profile = Profile.new(profile_params)
+    profile = Profile.new(profile_params) 
     if profile.save
       render json: profile
     else
